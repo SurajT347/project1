@@ -20,6 +20,7 @@ import AddEditAppointment from "../pages/AddEditAppointment";
 import Departments from "../pages/Departments";
 import Billing from "../pages/Billing";
 import Reports from "../pages/Reports";
+import UsersManagement from "../pages/UsersManagement";
 import Profile from "../pages/Profile";
 import Settings from "../pages/Settings";
 import NotFound from "../pages/NotFound";
@@ -160,6 +161,16 @@ export default function AppRoutes() {
         element={
           <PrivateRoute allowedRoles={["admin"]}>
             <Reports />
+          </PrivateRoute>
+        }
+      />
+
+      {/* User management — Admin only */}
+      <Route
+        path="/users"
+        element={
+          <PrivateRoute allowedRoles={["admin"]}>
+            <UsersManagement />
           </PrivateRoute>
         }
       />

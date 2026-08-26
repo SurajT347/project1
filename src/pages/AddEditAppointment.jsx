@@ -105,8 +105,26 @@ export default function AddEditAppointment({ isModal = false, onClose }) {
         // await api.put(`/appointments/${id}`, formData);
         console.log("Updating appointment:", id, formData);
       } else {
-        // await api.post("/appointments", formData);
-        console.log("Creating appointment:", formData);
+        const savedAppointments = JSON.parse(localStorage.getItem("appointments") || "[]");
+        const nextId = `A-${Math.max(...savedAppointments.map((appointment) => Number(appointment.id.slice(2))), 6000) + 1}`;
+        const patient = patients.find((item) => item.id === formData.patientId);
+        const doctor = doctors.find((item) => item.id === formData.doctorId);
+        localStorage.setItem(
+          "appointments",
+          JSON.stringify([
+            ...savedAppointments,
+            {
+              ...formData,
+              id: nextId,
+              patient: patient?.name || formData.patientId,
+              doctor: doctor?.name || formData.doctorId,
+              time: new Date(`1970-01-01T${formData.time}`).toLocaleTimeString("en-IN", {
+                hour: "numeric",
+                minute: "2-digit",
+              }),
+            },
+          ])
+        );
       }
       navigate("/appointments");
     } catch (err) {

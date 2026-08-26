@@ -15,7 +15,7 @@ const initialForm = {
   status: "Active",
 };
 
-export default function AddEditPatient({ isModal = false, onClose }) {
+export default function AddEditPatient({ isModal = false, onClose, onSaved }) {
   const { id } = useParams();
   const navigate = useNavigate();
   const isEditMode = Boolean(id);
@@ -68,8 +68,24 @@ export default function AddEditPatient({ isModal = false, onClose }) {
         // await api.put(`/patients/${id}`, formData);
         console.log("Updating patient:", id, formData);
       } else {
-        // await api.post("/patients", formData);
-        console.log("Creating patient:", formData);
+        let savedPatients = [];
+        try {
+          savedPatients = JSON.parse(localStorage.getItem("patients") || "[]");
+        } catch {
+          savedPatients = [];
+        }
+        const nextId = `P-${Math.max(...savedPatients.map((patient) => Number(patient.id.slice(2))), 2000) + 1}`;
+        const newPatient = {
+          ...formData,
+          id: nextId,
+          age: Number(formData.age),
+          lastVisit: new Date().toISOString().slice(0, 10),
+        };
+        localStorage.setItem("patients", JSON.stringify([...savedPatients, newPatient]));
+        if (onSaved) {
+          onSaved(newPatient);
+          return;
+        }
       }
       navigate("/patients");
     } catch (err) {

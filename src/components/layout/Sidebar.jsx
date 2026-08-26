@@ -11,6 +11,7 @@ const links = [
   { to: "/departments", label: "Departments", icon: "🏥", roles: ["admin"] },
   { to: "/billing", label: "Billing", icon: "💰", roles: ["admin", "receptionist"] },
   { to: "/reports", label: "Reports", icon: "📊", roles: ["admin"] },
+  { to: "/users", label: "User Management", icon: "👥", roles: ["admin"] },
   { to: "/settings", label: "Settings", icon: "⚙️", roles: ["admin", "doctor", "receptionist"] },
 ];
 

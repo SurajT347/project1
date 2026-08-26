@@ -28,7 +28,13 @@ export default function Appointments({ initialShowAddModal = false }) {
     ];
 
     setTimeout(() => {
-      setAppointments(mockData);
+      let savedAppointments = [];
+      try {
+        savedAppointments = JSON.parse(localStorage.getItem("appointments") || "[]");
+      } catch {
+        savedAppointments = [];
+      }
+      setAppointments([...mockData, ...savedAppointments]);
       setLoading(false);
     }, 300);
   }, []);
@@ -60,7 +66,14 @@ export default function Appointments({ initialShowAddModal = false }) {
   const handleDelete = (id) => {
     if (!window.confirm("Delete this appointment permanently?")) return;
     // await api.delete(`/appointments/${id}`);
-    setAppointments((prev) => prev.filter((a) => a.id !== id));
+    setAppointments((prev) => {
+      const updatedAppointments = prev.filter((a) => a.id !== id);
+      localStorage.setItem(
+        "appointments",
+        JSON.stringify(updatedAppointments.filter((a) => a.id.startsWith("A-6")))
+      );
+      return updatedAppointments;
+    });
   };
 
   const statusStyles = {

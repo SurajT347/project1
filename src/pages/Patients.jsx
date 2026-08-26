@@ -27,7 +27,13 @@ export default function Patients({ initialShowAddModal = false }) {
     ];
 
     setTimeout(() => {
-      setPatients(mockData);
+      let savedPatients = [];
+      try {
+        savedPatients = JSON.parse(localStorage.getItem("patients") || "[]");
+      } catch {
+        savedPatients = [];
+      }
+      setPatients([...mockData, ...savedPatients]);
       setLoading(false);
     }, 300);
   }, []);
@@ -51,7 +57,20 @@ export default function Patients({ initialShowAddModal = false }) {
     if (!window.confirm("Are you sure you want to delete this patient?")) return;
     // Replace with actual API call
     // api.delete(`/patients/${id}`);
-    setPatients((prev) => prev.filter((p) => p.id !== id));
+    setPatients((prev) => {
+      const updatedPatients = prev.filter((p) => p.id !== id);
+      localStorage.setItem(
+        "patients",
+        JSON.stringify(updatedPatients.filter((p) => p.id.startsWith("P-2")))
+      );
+      return updatedPatients;
+    });
+  };
+
+  const handlePatientSaved = (patient) => {
+    setPatients((prev) => [...prev, patient]);
+    setShowAddModal(false);
+    setCurrentPage(1);
   };
 
   return (
@@ -191,7 +210,13 @@ export default function Patients({ initialShowAddModal = false }) {
         )}
       </div>
 
-      {showAddModal && <AddEditPatient isModal onClose={() => setShowAddModal(false)} />}
+      {showAddModal && (
+        <AddEditPatient
+          isModal
+          onClose={() => setShowAddModal(false)}
+          onSaved={handlePatientSaved}
+        />
+      )}
     </div>
   );
 }
