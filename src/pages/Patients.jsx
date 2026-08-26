@@ -1,14 +1,16 @@
 // src/pages/Patients.jsx
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import AddEditPatient from "./AddEditPatient";
 
-export default function Patients() {
+export default function Patients({ initialShowAddModal = false }) {
   const navigate = useNavigate();
   const [patients, setPatients] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [genderFilter, setGenderFilter] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
+  const [showAddModal, setShowAddModal] = useState(initialShowAddModal);
   const itemsPerPage = 8;
 
   useEffect(() => {
@@ -63,7 +65,7 @@ export default function Patients() {
           </p>
         </div>
         <button
-          onClick={() => navigate("/patients/add")}
+          onClick={() => setShowAddModal(true)}
           className="bg-blue-600 text-white px-5 py-2.5 rounded-lg font-medium hover:bg-blue-700 transition"
         >
           + Add Patient
@@ -188,6 +190,8 @@ export default function Patients() {
           </div>
         )}
       </div>
+
+      {showAddModal && <AddEditPatient isModal onClose={() => setShowAddModal(false)} />}
     </div>
   );
 }

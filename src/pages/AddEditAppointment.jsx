@@ -12,7 +12,7 @@ const initialForm = {
   status: "Pending",
 };
 
-export default function AddEditAppointment() {
+export default function AddEditAppointment({ isModal = false, onClose }) {
   const { id } = useParams();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -28,6 +28,7 @@ export default function AddEditAppointment() {
   const [loading, setLoading] = useState(isEditMode);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const closeForm = onClose || (() => navigate("/appointments"));
 
   // Load patients & doctors for dropdowns
   useEffect(() => {
@@ -122,22 +123,24 @@ export default function AddEditAppointment() {
   }
 
   return (
-    <div className="p-6 max-w-3xl mx-auto space-y-6">
+    <div className={isModal ? "fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/55 px-4 py-3 backdrop-blur-[2px]" : "p-6 max-w-3xl mx-auto space-y-6"}>
+      <div className={isModal ? "max-h-[84vh] w-full max-w-xl overflow-y-auto rounded-3xl border border-white/70 bg-white shadow-2xl shadow-slate-950/25" : "space-y-6"}>
       {/* Back link */}
-      <Link to="/appointments" className="text-sm text-blue-600 hover:underline">
-        ← Back to Appointments
-      </Link>
+      {!isModal && <Link to="/appointments" className="text-sm text-blue-600 hover:underline">← Back to Appointments</Link>}
 
       {/* Header */}
-      <div>
-        <h1 className="text-2xl font-bold text-gray-800">
+      <div className={isModal ? "flex items-start justify-between bg-gradient-to-r from-blue-700 via-violet-600 to-purple-600 px-5 py-3.5 text-white" : ""}>
+        <div>
+        <h1 className={isModal ? "text-xl font-bold tracking-tight" : "text-2xl font-bold text-gray-800"}>
           {isEditMode ? "Edit Appointment" : "New Appointment"}
         </h1>
-        <p className="text-gray-500 text-sm mt-1">
+        <p className={isModal ? "mt-1 text-sm text-blue-50" : "text-gray-500 text-sm mt-1"}>
           {isEditMode
             ? "Update the appointment details below."
             : "Schedule a new appointment for a patient."}
         </p>
+        </div>
+        {isModal && <button type="button" onClick={closeForm} aria-label="Close appointment dialog" title="Close" className="rounded-xl p-2 text-2xl leading-none text-white/75 transition hover:bg-white/15 hover:text-white">&times;</button>}
       </div>
 
       {/* Error */}
@@ -148,7 +151,7 @@ export default function AddEditAppointment() {
       )}
 
       {/* Form */}
-      <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-sm p-6 space-y-5">
+      <form onSubmit={handleSubmit} className={isModal ? "space-y-4 p-5" : "bg-white rounded-2xl shadow-sm p-6 space-y-5"}>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
           <Field label="Patient" required>
             <select name="patientId" value={formData.patientId} onChange={handleChange} className="input bg-white">
@@ -224,20 +227,21 @@ export default function AddEditAppointment() {
         <div className="flex justify-end gap-3 pt-2">
           <button
             type="button"
-            onClick={() => navigate("/appointments")}
-            className="px-5 py-2.5 border border-gray-200 rounded-lg font-medium text-gray-600 hover:bg-gray-50"
+            onClick={closeForm}
+            className="rounded-xl border border-slate-200 px-5 py-2.5 text-sm font-semibold text-slate-600 transition hover:border-slate-300 hover:bg-slate-50"
           >
             Cancel
           </button>
           <button
             type="submit"
             disabled={saving}
-            className="px-5 py-2.5 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition disabled:opacity-60"
+            className="rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-blue-600/20 transition hover:-translate-y-0.5 hover:bg-blue-700 disabled:opacity-60"
           >
             {saving ? "Saving..." : isEditMode ? "Update Appointment" : "Book Appointment"}
           </button>
         </div>
       </form>
+      </div>
     </div>
   );
 }

@@ -15,7 +15,7 @@ const initialForm = {
   status: "Active",
 };
 
-export default function AddEditPatient() {
+export default function AddEditPatient({ isModal = false, onClose }) {
   const { id } = useParams();
   const navigate = useNavigate();
   const isEditMode = Boolean(id);
@@ -24,6 +24,7 @@ export default function AddEditPatient() {
   const [loading, setLoading] = useState(isEditMode);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const closeForm = onClose || (() => navigate("/patients"));
 
   useEffect(() => {
     if (!isEditMode) return;
@@ -85,22 +86,24 @@ export default function AddEditPatient() {
   }
 
   return (
-    <div className="p-6 max-w-3xl mx-auto space-y-6">
+    <div className={isModal ? "fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/55 px-4 py-3 backdrop-blur-[2px]" : "min-h-screen bg-gradient-to-br from-blue-50 via-violet-50 to-purple-100 p-4 sm:p-8"}>
+      <div className={isModal ? "max-h-[84vh] w-full max-w-xl overflow-y-auto rounded-3xl border border-white/70 bg-white shadow-2xl shadow-slate-950/25" : "mx-auto w-full max-w-3xl space-y-6"}>
       {/* Back link */}
-      <Link to="/patients" className="text-sm text-blue-600 hover:underline">
-        ← Back to Patients
-      </Link>
+      {!isModal && <Link to="/patients" className="text-sm text-blue-600 hover:underline">← Back to Patients</Link>}
 
       {/* Header */}
-      <div>
-        <h1 className="text-2xl font-bold text-gray-800">
+      <div className={isModal ? "flex items-start justify-between bg-gradient-to-r from-blue-700 via-violet-600 to-purple-600 px-5 py-3.5 text-white" : "rounded-3xl bg-gradient-to-r from-blue-700 via-violet-600 to-purple-600 px-6 py-6 text-white shadow-xl shadow-blue-900/15"}>
+        <div>
+        <h1 className={isModal ? "text-xl font-bold tracking-tight" : "text-2xl font-bold tracking-tight"}>
           {isEditMode ? "Edit Patient" : "Add New Patient"}
         </h1>
-        <p className="text-gray-500 text-sm mt-1">
+        <p className={isModal ? "mt-1 text-sm text-blue-50" : "mt-1 text-sm text-blue-50"}>
           {isEditMode
             ? "Update the patient's information below."
             : "Fill in the details to register a new patient."}
         </p>
+        </div>
+        {isModal && <button type="button" onClick={closeForm} aria-label="Close patient dialog" title="Close" className="rounded-xl p-2 text-2xl leading-none text-white/75 transition hover:bg-white/15 hover:text-white">&times;</button>}
       </div>
 
       {/* Error */}
@@ -111,7 +114,7 @@ export default function AddEditPatient() {
       )}
 
       {/* Form */}
-      <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-sm p-6 space-y-5">
+      <form onSubmit={handleSubmit} className={isModal ? "space-y-4 p-5" : "space-y-5 rounded-3xl border border-white/80 bg-white p-6 shadow-xl shadow-blue-900/10 sm:p-8"}>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
           <Field label="Full Name" required>
             <input
@@ -120,7 +123,7 @@ export default function AddEditPatient() {
               value={formData.name}
               onChange={handleChange}
               placeholder="John Doe"
-              className="input"
+              className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10"
             />
           </Field>
 
@@ -132,12 +135,12 @@ export default function AddEditPatient() {
               onChange={handleChange}
               placeholder="34"
               min="0"
-              className="input"
+              className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10"
             />
           </Field>
 
           <Field label="Gender">
-            <select name="gender" value={formData.gender} onChange={handleChange} className="input bg-white">
+            <select name="gender" value={formData.gender} onChange={handleChange} className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-800 outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10">
               <option value="Male">Male</option>
               <option value="Female">Female</option>
               <option value="Other">Other</option>
@@ -145,7 +148,7 @@ export default function AddEditPatient() {
           </Field>
 
           <Field label="Blood Group">
-            <select name="bloodGroup" value={formData.bloodGroup} onChange={handleChange} className="input bg-white">
+            <select name="bloodGroup" value={formData.bloodGroup} onChange={handleChange} className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-800 outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10">
               {["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"].map((bg) => (
                 <option key={bg} value={bg}>{bg}</option>
               ))}
@@ -159,7 +162,7 @@ export default function AddEditPatient() {
               value={formData.phone}
               onChange={handleChange}
               placeholder="+91 98765 43210"
-              className="input"
+              className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10"
             />
           </Field>
 
@@ -170,12 +173,12 @@ export default function AddEditPatient() {
               value={formData.email}
               onChange={handleChange}
               placeholder="patient@email.com"
-              className="input"
+              className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10"
             />
           </Field>
 
           <Field label="Status">
-            <select name="status" value={formData.status} onChange={handleChange} className="input bg-white">
+            <select name="status" value={formData.status} onChange={handleChange} className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-800 outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10">
               <option value="Active">Active</option>
               <option value="Inactive">Inactive</option>
             </select>
@@ -188,7 +191,7 @@ export default function AddEditPatient() {
               value={formData.emergencyContact}
               onChange={handleChange}
               placeholder="+91 90000 11223 (Relation - Name)"
-              className="input"
+              className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10"
             />
           </Field>
         </div>
@@ -200,7 +203,7 @@ export default function AddEditPatient() {
             onChange={handleChange}
             placeholder="Street, City, State"
             rows={3}
-            className="input resize-none"
+            className="w-full resize-none rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10"
           />
         </Field>
 
@@ -208,20 +211,21 @@ export default function AddEditPatient() {
         <div className="flex justify-end gap-3 pt-2">
           <button
             type="button"
-            onClick={() => navigate("/patients")}
-            className="px-5 py-2.5 border border-gray-200 rounded-lg font-medium text-gray-600 hover:bg-gray-50"
+            onClick={closeForm}
+            className="rounded-xl border border-slate-200 px-5 py-2.5 text-sm font-semibold text-slate-600 transition hover:border-slate-300 hover:bg-slate-50"
           >
             Cancel
           </button>
           <button
             type="submit"
             disabled={saving}
-            className="px-5 py-2.5 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition disabled:opacity-60"
+            className="rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-blue-600/20 transition hover:-translate-y-0.5 hover:bg-blue-700 disabled:opacity-60"
           >
             {saving ? "Saving..." : isEditMode ? "Update Patient" : "Add Patient"}
           </button>
         </div>
       </form>
+      </div>
     </div>
   );
 }

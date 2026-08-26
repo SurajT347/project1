@@ -2,13 +2,39 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function Doctors() {
+const initialDoctorForm = {
+  name: "",
+  department: "Cardiology",
+  specialization: "",
+  qualification: "",
+  phone: "",
+  email: "",
+  experience: "",
+  consultationFee: "",
+  status: "Active",
+};
+
+const doctorDepartments = [
+  "Cardiology",
+  "General Medicine",
+  "Pediatrics",
+  "Orthopedics",
+  "Dermatology",
+  "Neurology",
+  "Gynecology",
+  "ENT",
+];
+
+export default function Doctors({ initialShowAddModal = false }) {
   const navigate = useNavigate();
   const [doctors, setDoctors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [deptFilter, setDeptFilter] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
+  const [showAddModal, setShowAddModal] = useState(initialShowAddModal);
+  const [doctorForm, setDoctorForm] = useState(initialDoctorForm);
+  const [formError, setFormError] = useState("");
   const itemsPerPage = 8;
 
   useEffect(() => {
@@ -52,6 +78,47 @@ export default function Doctors() {
     setDoctors((prev) => prev.filter((d) => d.id !== id));
   };
 
+  const openAddModal = () => {
+    setDoctorForm(initialDoctorForm);
+    setFormError("");
+    setShowAddModal(true);
+  };
+
+  const closeAddModal = () => {
+    setShowAddModal(false);
+    setFormError("");
+  };
+
+  const handleFormChange = (e) => {
+    setDoctorForm({ ...doctorForm, [e.target.name]: e.target.value });
+  };
+
+  const handleAddDoctor = (e) => {
+    e.preventDefault();
+    const { name, phone, email, department } = doctorForm;
+
+    if (!name.trim() || !phone.trim() || !email.trim() || !department) {
+      setFormError("Name, Phone, Email, and Department are required.");
+      return;
+    }
+
+    const nextId = `D-${Math.max(...doctors.map((doctor) => Number(doctor.id.slice(2))), 200) + 1}`;
+    setDoctors((prev) => [
+      ...prev,
+      {
+        ...doctorForm,
+        id: nextId,
+        name: name.trim(),
+        phone: phone.trim(),
+        email: email.trim(),
+        experience: Number(doctorForm.experience) || 0,
+        status: doctorForm.status,
+      },
+    ]);
+    setCurrentPage(1);
+    closeAddModal();
+  };
+
   return (
     <div className="p-6 space-y-6">
       {/* Header */}
@@ -63,7 +130,7 @@ export default function Doctors() {
           </p>
         </div>
         <button
-          onClick={() => navigate("/doctors/add")}
+          onClick={openAddModal}
           className="bg-blue-600 text-white px-5 py-2.5 rounded-lg font-medium hover:bg-blue-700 transition"
         >
           + Add Doctor
@@ -187,6 +254,113 @@ export default function Doctors() {
           </div>
         )}
       </div>
+
+      {showAddModal && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/55 px-4 py-3 backdrop-blur-[2px]"
+          onMouseDown={(e) => e.target === e.currentTarget && closeAddModal()}
+        >
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="add-doctor-title"
+            className="max-h-[84vh] w-full max-w-xl overflow-y-auto rounded-3xl border border-white/70 bg-white shadow-2xl shadow-slate-950/25"
+          >
+            <div className="flex items-start justify-between bg-gradient-to-r from-blue-700 via-violet-600 to-purple-600 px-5 py-3.5 text-white">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/15 text-xl shadow-inner ring-1 ring-white/20">
+                  +
+                </div>
+                <div>
+                  <h2 id="add-doctor-title" className="text-xl font-bold tracking-tight">
+                    Add New Doctor
+                  </h2>
+                  <p className="mt-1 text-sm text-blue-50">Create a profile for your hospital team.</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={closeAddModal}
+                aria-label="Close add doctor dialog"
+                title="Close"
+                className="rounded-xl p-2 text-2xl leading-none text-white/75 transition hover:bg-white/15 hover:text-white"
+              >
+                &times;
+              </button>
+            </div>
+
+            <form onSubmit={handleAddDoctor} className="space-y-3.5 p-5">
+              {formError && (
+                <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+                  {formError}
+                </div>
+              )}
+
+              <div className="flex items-center gap-3 text-xs font-bold uppercase tracking-wider text-blue-700">
+                <span className="h-2 w-2 rounded-full bg-cyan-500" />
+                Professional details
+                <span className="h-px flex-1 bg-slate-200" />
+              </div>
+
+              <div className="grid grid-cols-1 gap-x-4 gap-y-3.5 sm:grid-cols-2">
+                <DoctorField label="Full Name" required>
+                  <input name="name" value={doctorForm.name} onChange={handleFormChange} placeholder="Dr. John Doe" className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10" />
+                </DoctorField>
+                <DoctorField label="Department" required>
+                  <select name="department" value={doctorForm.department} onChange={handleFormChange} className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-800 outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10">
+                    {doctorDepartments.map((department) => <option key={department}>{department}</option>)}
+                  </select>
+                </DoctorField>
+                <DoctorField label="Specialization">
+                  <input name="specialization" value={doctorForm.specialization} onChange={handleFormChange} placeholder="Interventional Cardiology" className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10" />
+                </DoctorField>
+                <DoctorField label="Qualification">
+                  <input name="qualification" value={doctorForm.qualification} onChange={handleFormChange} placeholder="MD, DM (Cardiology)" className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10" />
+                </DoctorField>
+                <DoctorField label="Phone Number" required>
+                  <input type="tel" name="phone" value={doctorForm.phone} onChange={handleFormChange} placeholder="+91 98765 00011" className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10" />
+                </DoctorField>
+                <DoctorField label="Email Address" required>
+                  <input type="email" name="email" value={doctorForm.email} onChange={handleFormChange} placeholder="doctor@hms.com" className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10" />
+                </DoctorField>
+                <DoctorField label="Years of Experience">
+                  <input type="number" name="experience" value={doctorForm.experience} onChange={handleFormChange} placeholder="12" min="0" className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10" />
+                </DoctorField>
+                <DoctorField label="Consultation Fee (INR)">
+                  <input type="number" name="consultationFee" value={doctorForm.consultationFee} onChange={handleFormChange} placeholder="800" min="0" className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10" />
+                </DoctorField>
+                <DoctorField label="Status">
+                  <select name="status" value={doctorForm.status} onChange={handleFormChange} className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-800 outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10">
+                    <option>Active</option>
+                    <option>On Leave</option>
+                    <option>Inactive</option>
+                  </select>
+                </DoctorField>
+              </div>
+
+              <div className="flex justify-end gap-3 border-t border-slate-100 pt-5">
+                <button type="button" onClick={closeAddModal} className="rounded-xl border border-slate-200 px-5 py-2.5 text-sm font-semibold text-slate-600 transition hover:border-slate-300 hover:bg-slate-50">
+                  Cancel
+                </button>
+                <button type="submit" className="rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-blue-600/20 transition hover:-translate-y-0.5 hover:bg-blue-700">
+                  Add Doctor
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function DoctorField({ label, required, children }) {
+  return (
+    <div>
+      <label className="mb-1 block text-sm font-medium text-gray-700">
+        {label} {required && <span className="text-red-500">*</span>}
+      </label>
+      {children}
     </div>
   );
 }

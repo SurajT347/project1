@@ -1,8 +1,9 @@
 // src/pages/Appointments.jsx
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import AddEditAppointment from "./AddEditAppointment";
 
-export default function Appointments() {
+export default function Appointments({ initialShowAddModal = false }) {
   const navigate = useNavigate();
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -10,6 +11,7 @@ export default function Appointments() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [dateFilter, setDateFilter] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [showAddModal, setShowAddModal] = useState(initialShowAddModal);
   const itemsPerPage = 8;
 
   useEffect(() => {
@@ -79,7 +81,7 @@ export default function Appointments() {
           </p>
         </div>
         <button
-          onClick={() => navigate("/appointments/add")}
+          onClick={() => setShowAddModal(true)}
           className="bg-blue-600 text-white px-5 py-2.5 rounded-lg font-medium hover:bg-blue-700 transition"
         >
           + New Appointment
@@ -214,6 +216,8 @@ export default function Appointments() {
           </div>
         )}
       </div>
+
+      {showAddModal && <AddEditAppointment isModal onClose={() => setShowAddModal(false)} />}
     </div>
   );
 }

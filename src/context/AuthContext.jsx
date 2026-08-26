@@ -8,13 +8,8 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // On app load, check if a token/user exists (e.g., in localStorage)
-    const storedUser = localStorage.getItem("user");
-    const token = localStorage.getItem("token");
-
-    if (storedUser && token) {
-      setUser(JSON.parse(storedUser));
-    }
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
     setLoading(false);
   }, []);
 

@@ -53,7 +53,7 @@ export default function AppRoutes() {
         path="/patients/add"
         element={
           <PrivateRoute allowedRoles={["admin", "receptionist"]}>
-            <AddEditPatient />
+            <Patients initialShowAddModal />
           </PrivateRoute>
         }
       />
@@ -87,7 +87,7 @@ export default function AppRoutes() {
         path="/doctors/add"
         element={
           <PrivateRoute allowedRoles={["admin"]}>
-            <AddEditDoctor />
+            <Doctors initialShowAddModal />
           </PrivateRoute>
         }
       />
@@ -121,7 +121,7 @@ export default function AppRoutes() {
         path="/appointments/add"
         element={
           <PrivateRoute allowedRoles={["admin", "receptionist"]}>
-            <AddEditAppointment />
+            <Appointments initialShowAddModal />
           </PrivateRoute>
         }
       />

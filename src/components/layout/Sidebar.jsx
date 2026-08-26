@@ -1,6 +1,6 @@
 // src/components/layout/Sidebar.jsx
 import { useEffect, useRef } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
 const links = [
@@ -15,10 +15,17 @@ const links = [
 ];
 
 export default function Sidebar({ isOpen = false, onClose = () => {} }) {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
   const role = user?.role || "receptionist";
   const visibleLinks = links.filter((link) => link.roles.includes(role));
   const asideRef = useRef(null);
+
+  const handleLogout = () => {
+    logout();
+    onClose();
+    navigate("/login");
+  };
 
   // Close on Escape, and lock background scroll while the mobile drawer is open
   useEffect(() => {
@@ -67,16 +74,16 @@ export default function Sidebar({ isOpen = false, onClose = () => {} }) {
         // entirely when closed instead of just visually shifting it off-screen
         aria-hidden={!isOpen && window.innerWidth < 1024 ? true : undefined}
         className={`
-          fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-100
+          fixed inset-y-0 left-0 z-50 w-64 bg-gradient-to-b from-blue-700 via-violet-700 to-purple-800 text-white shadow-xl shadow-blue-950/20
           flex flex-col transform transition-transform duration-200 ease-in-out
           lg:static lg:translate-x-0 lg:z-auto
           ${isOpen ? "translate-x-0" : "-translate-x-full"}
         `}
       >
-        <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
+        <div className="flex items-center justify-between border-b border-white/15 px-6 py-5">
           <div>
-            <h1 className="text-lg font-bold text-blue-600">HMS</h1>
-            <p className="text-xs text-gray-400">Hospital Management</p>
+            <h1 className="text-lg font-bold tracking-widest text-white">HMS</h1>
+            <p className="text-xs text-blue-100">Hospital Management</p>
           </div>
           <button
             type="button"
@@ -84,7 +91,7 @@ export default function Sidebar({ isOpen = false, onClose = () => {} }) {
               e.currentTarget.blur();
               onClose();
             }}
-            className="lg:hidden text-gray-400 hover:text-gray-600 text-xl leading-none"
+            className="text-xl leading-none text-white/70 transition hover:text-white lg:hidden"
             aria-label="Close menu"
           >
             ✕
@@ -100,8 +107,8 @@ export default function Sidebar({ isOpen = false, onClose = () => {} }) {
               className={({ isActive }) =>
                 `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition ${
                   isActive
-                    ? "bg-blue-50 text-blue-600"
-                    : "text-gray-600 hover:bg-gray-50"
+                    ? "bg-white/20 text-white shadow-inner shadow-white/10"
+                    : "text-blue-100 hover:bg-white/10 hover:text-white"
                 }`
               }
             >
@@ -110,6 +117,17 @@ export default function Sidebar({ isOpen = false, onClose = () => {} }) {
             </NavLink>
           ))}
         </nav>
+
+        <div className="border-t border-white/15 p-3">
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold text-blue-100 transition hover:bg-white/10 hover:text-white"
+          >
+            <span aria-hidden="true">↪</span>
+            Logout
+          </button>
+        </div>
       </aside>
     </>
   );

@@ -132,13 +132,19 @@ export default function UsersManagement() {
 
             {/* Add User Modal */}
             {showModal && (
-                <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
-                    <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl space-y-4">
-                        <div className="flex justify-between items-center border-b pb-3">
-                            <h3 className="font-bold text-gray-800 text-lg">Add New System User</h3>
-                            <button onClick={() => setShowModal(false)} className="text-gray-400 hover:text-gray-600 text-xl">✕</button>
+                <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/55 p-4 backdrop-blur-[2px]">
+                    <div className="w-full max-w-xl max-h-[84vh] overflow-y-auto rounded-3xl border border-white/70 bg-white shadow-2xl shadow-slate-950/25">
+                        <div className="flex items-start justify-between bg-gradient-to-r from-blue-700 via-violet-600 to-purple-600 px-5 py-3.5 text-white">
+                            <div className="flex items-center gap-3">
+                                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/15 text-xl shadow-inner ring-1 ring-white/20">+</div>
+                                <div>
+                                    <h3 className="text-xl font-bold tracking-tight">Add New System User</h3>
+                                    <p className="mt-1 text-sm text-blue-50">Create access for a hospital team member.</p>
+                                </div>
+                            </div>
+                            <button type="button" onClick={() => setShowModal(false)} aria-label="Close user dialog" title="Close" className="rounded-xl p-2 text-2xl leading-none text-white/75 transition hover:bg-white/15 hover:text-white">&times;</button>
                         </div>
-                        <form onSubmit={handleAddUser} className="space-y-4">
+                        <form onSubmit={handleAddUser} className="space-y-4 p-5">
                             <div>
                                 <label className="block text-xs font-medium text-gray-700 mb-1">Full Name</label>
                                 <input
@@ -147,7 +153,7 @@ export default function UsersManagement() {
                                     value={newUser.name}
                                     onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
                                     placeholder="e.g. Dr. John Doe"
-                                    className="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+                                    className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10"
                                 />
                             </div>
                             <div>
@@ -158,7 +164,7 @@ export default function UsersManagement() {
                                     value={newUser.email}
                                     onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
                                     placeholder="john.doe@hospital.com"
-                                    className="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+                                    className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10"
                                 />
                             </div>
                             <div className="grid grid-cols-2 gap-3">
@@ -167,7 +173,7 @@ export default function UsersManagement() {
                                     <select
                                         value={newUser.role}
                                         onChange={(e) => setNewUser({ ...newUser, role: e.target.value })}
-                                        className="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none bg-white"
+                                        className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-800 outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10"
                                     >
                                         <option value="superadmin">Super Admin</option>
                                         <option value="admin">Admin</option>
@@ -182,21 +188,21 @@ export default function UsersManagement() {
                                         value={newUser.department}
                                         onChange={(e) => setNewUser({ ...newUser, department: e.target.value })}
                                         placeholder="e.g. Cardiology"
-                                        className="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+                                        className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10"
                                     />
                                 </div>
                             </div>
-                            <div className="flex justify-end gap-2 pt-3 border-t">
+                            <div className="flex justify-end gap-3 border-t border-slate-100 pt-4">
                                 <button
                                     type="button"
                                     onClick={() => setShowModal(false)}
-                                    className="px-4 py-2 border rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50"
+                                    className="rounded-xl border border-slate-200 px-5 py-2.5 text-sm font-semibold text-slate-600 transition hover:border-slate-300 hover:bg-slate-50"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
-                                    className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium"
+                                    className="rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-blue-600/20 transition hover:-translate-y-0.5 hover:bg-blue-700"
                                 >
                                     Save User
                                 </button>

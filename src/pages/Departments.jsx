@@ -180,19 +180,28 @@ export default function Departments() {
 
       {/* Add/Edit Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 px-4">
-          <div className="bg-white rounded-2xl shadow-lg w-full max-w-md p-6">
-            <h2 className="text-lg font-bold text-gray-800 mb-4">
-              {editingDept ? "Edit Department" : "Add Department"}
-            </h2>
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/55 px-4 py-3 backdrop-blur-[2px]">
+          <div className="w-full max-w-xl max-h-[84vh] overflow-y-auto rounded-3xl border border-white/70 bg-white shadow-2xl shadow-slate-950/25">
+            <div className="flex items-start justify-between bg-gradient-to-r from-blue-700 via-violet-600 to-purple-600 px-5 py-3.5 text-white">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/15 text-xl shadow-inner ring-1 ring-white/20">+</div>
+                <div>
+                  <h2 className="text-xl font-bold tracking-tight">
+                    {editingDept ? "Edit Department" : "Add Department"}
+                  </h2>
+                  <p className="mt-1 text-sm text-blue-50">Organize your hospital departments.</p>
+                </div>
+              </div>
+              <button type="button" onClick={() => setShowModal(false)} aria-label="Close department dialog" title="Close" className="rounded-xl p-2 text-2xl leading-none text-white/75 transition hover:bg-white/15 hover:text-white">&times;</button>
+            </div>
 
             {error && (
-              <div className="bg-red-50 text-red-600 text-sm px-4 py-2 rounded-md mb-4 border border-red-200">
+              <div className="mx-5 mt-5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
                 {error}
               </div>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-4 p-5">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Department Name <span className="text-red-500">*</span>
@@ -203,7 +212,7 @@ export default function Departments() {
                   value={formData.name}
                   onChange={handleChange}
                   placeholder="e.g. Cardiology"
-                  className="input"
+                  className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10"
                 />
               </div>
 
@@ -217,7 +226,7 @@ export default function Departments() {
                   value={formData.head}
                   onChange={handleChange}
                   placeholder="e.g. Dr. Sarah Johnson"
-                  className="input"
+                  className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10"
                 />
               </div>
 
@@ -231,22 +240,22 @@ export default function Departments() {
                   onChange={handleChange}
                   placeholder="Short description of the department"
                   rows={3}
-                  className="input resize-none"
+                  className="w-full resize-none rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10"
                 />
               </div>
 
-              <div className="flex justify-end gap-3 pt-2">
+              <div className="flex justify-end gap-3 border-t border-slate-100 pt-4">
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="px-4 py-2 border border-gray-200 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50"
+                  className="rounded-xl border border-slate-200 px-5 py-2.5 text-sm font-semibold text-slate-600 transition hover:border-slate-300 hover:bg-slate-50"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={saving}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 disabled:opacity-60"
+                  className="rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-blue-600/20 transition hover:-translate-y-0.5 hover:bg-blue-700 disabled:opacity-60"
                 >
                   {saving ? "Saving..." : editingDept ? "Update" : "Add"}
                 </button>
