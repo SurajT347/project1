@@ -98,7 +98,7 @@ export default function PatientAppointments() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-4 sm:p-6">
+    <div className="patient-page min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-4 sm:p-6">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="mb-6">
@@ -107,8 +107,8 @@ export default function PatientAppointments() {
         </div>
 
         {/* Action Bar */}
-        <div className="bg-white rounded-lg shadow-sm p-4 mb-6 flex justify-between items-center flex-wrap gap-4">
-          <div className="flex gap-2">
+          <div className="bg-white rounded-lg shadow-sm p-4 mb-6 flex justify-between items-center flex-wrap gap-4">
+          <div className="flex gap-2 flex-wrap">
             {["all", "Confirmed", "Pending", "Completed"].map((status) => (
               <button
                 key={status}

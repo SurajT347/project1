@@ -74,7 +74,7 @@ export default function PatientDashboard() {
   if (!patientData) return <div className="p-6 text-center">Loading...</div>;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-4 sm:p-6">
+    <div className="patient-page min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-4 sm:p-6">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
         <div className="bg-white rounded-lg shadow-sm p-6 border-l-4 border-blue-600">

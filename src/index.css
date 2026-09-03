@@ -56,3 +56,54 @@ body {
 [class~="bg-purple-50"] { background-color: var(--accent-50) !important; }
 [class~="bg-purple-100"] { background-color: var(--accent-100) !important; }
 [class~="text-purple-600"] { color: var(--accent-600) !important; }
+
+@media (max-width: 640px) {
+	.patient-page {
+		overflow-wrap: anywhere;
+	}
+
+	.patient-page h1 {
+		font-size: 1.5rem;
+		line-height: 2rem;
+	}
+
+	.patient-page h2,
+	.patient-page h3 {
+		font-size: 1.25rem;
+		line-height: 1.75rem;
+	}
+
+	.patient-page [class*="grid-cols-2"],
+	.patient-page [class*="grid-cols-3"],
+	.patient-page [class*="grid-cols-4"],
+	.patient-page [class*="grid-cols-5"] {
+		grid-template-columns: minmax(0, 1fr) !important;
+	}
+
+	.patient-page .flex.justify-between.items-start {
+		align-items: stretch;
+		flex-direction: column;
+	}
+
+	.patient-page .flex.gap-2.items-center {
+		align-items: stretch;
+		flex-wrap: wrap;
+	}
+
+	.patient-page .flex.gap-3 {
+		flex-direction: column;
+	}
+
+	.patient-page .flex.gap-3 > button,
+	.patient-page .flex.gap-2.items-center > button {
+		width: 100%;
+	}
+
+	.patient-page [class*="max-h-"] {
+		max-height: calc(100vh - 2rem);
+	}
+
+	.patient-page .sticky {
+		padding: 1rem;
+	}
+}

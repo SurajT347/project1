@@ -18,7 +18,18 @@ export default function PrivateRoute({ children, allowedRoles }) {
     return <Navigate to="/login" replace />;
   }
 
-  if (allowedRoles && user.role !== "superadmin" && !allowedRoles.includes(user.role)) {
+  const userRole = (user.role || "").toLowerCase().trim();
+  const normalizedAllowedRoles = (allowedRoles || []).map((r) => r.toLowerCase().trim());
+
+  if (
+    allowedRoles &&
+    userRole !== "superadmin" &&
+    userRole !== "super admin" &&
+    !normalizedAllowedRoles.includes(userRole)
+  ) {
+    console.warn(
+      `[PrivateRoute] Access denied. user.role = "${user.role}", allowedRoles = [${allowedRoles}]`
+    );
     return <Navigate to="/dashboard" replace />;
   }
 

@@ -1,4 +1,6 @@
 // StaffCard.jsx
+import { useNavigate } from "react-router-dom";
+
 const roleColors = {
   "Admin": "bg-blue-100 text-blue-800",
   "Doctor": "bg-red-100 text-red-800",
@@ -8,9 +10,10 @@ const roleColors = {
 };
 
 export default function StaffCard({ staff, onToggleStatus }) {
+  const navigate = useNavigate();
   const statusColor = staff.status === "Active" ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800";
   const roleColor = roleColors[staff.role] || "bg-gray-100 text-gray-800";
-  
+
   return (
     <div className="border border-gray-200 rounded-lg p-4 hover:shadow-lg transition-shadow">
       <div className="flex justify-between items-start mb-3">
@@ -45,7 +48,10 @@ export default function StaffCard({ staff, onToggleStatus }) {
       </div>
 
       <div className="flex gap-2">
-        <button className="flex-1 bg-purple-600 text-white py-2 rounded text-sm hover:bg-purple-700 transition">
+        <button
+          onClick={() => navigate(`/staff/edit/${staff.id}`)}
+          className="flex-1 bg-purple-600 text-white py-2 rounded text-sm hover:bg-purple-700 transition"
+        >
           Edit
         </button>
         <button

@@ -222,11 +222,11 @@ export default function AppRoutes() {
         }
       />
 
-      {/* User management — Admin only */}
+      {/* User management — Admin (and Super Admin) only */}
       <Route
         path="/users"
         element={
-          <PrivateRoute allowedRoles={["admin"]}>
+          <PrivateRoute allowedRoles={["admin", "super admin"]}>
             <UsersManagement />
           </PrivateRoute>
         }
