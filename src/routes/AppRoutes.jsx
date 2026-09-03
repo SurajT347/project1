@@ -25,6 +25,13 @@ import Profile from "../pages/Profile";
 import Settings from "../pages/Settings";
 import NotFound from "../pages/NotFound";
 
+// Patient Portal Pages
+import PatientDashboard from "../pages/PatientDashboard";
+import PatientAppointments from "../pages/PatientAppointments";
+import PatientMedicalRecords from "../pages/PatientMedicalRecords";
+import PatientPrescriptions from "../pages/PatientPrescriptions";
+import PatientProfile from "../pages/PatientProfile";
+
 export default function AppRoutes() {
   return (
     <Routes>
@@ -40,6 +47,48 @@ export default function AppRoutes() {
       <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
       <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
       <Route path="/settings" element={<PrivateRoute><Settings /></PrivateRoute>} />
+
+      {/* Patient Portal Routes — Patient role only */}
+      <Route
+        path="/patient-dashboard"
+        element={
+          <PrivateRoute allowedRoles={["patient"]}>
+            <PatientDashboard />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/patient-appointments"
+        element={
+          <PrivateRoute allowedRoles={["patient"]}>
+            <PatientAppointments />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/patient-medical-records"
+        element={
+          <PrivateRoute allowedRoles={["patient"]}>
+            <PatientMedicalRecords />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/patient-prescriptions"
+        element={
+          <PrivateRoute allowedRoles={["patient"]}>
+            <PatientPrescriptions />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/patient-profile"
+        element={
+          <PrivateRoute allowedRoles={["patient"]}>
+            <PatientProfile />
+          </PrivateRoute>
+        }
+      />
 
       {/* Patients — Admin, Doctor, Receptionist */}
       <Route
@@ -145,12 +194,20 @@ export default function AppRoutes() {
         }
       />
 
-      {/* Billing — Admin, Receptionist */}
+      {/* Billing — all clinical and administrative roles */}
       <Route
         path="/billing"
         element={
-          <PrivateRoute allowedRoles={["admin", "receptionist"]}>
+          <PrivateRoute allowedRoles={["admin", "doctor", "receptionist"]}>
             <Billing />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/billing/add"
+        element={
+          <PrivateRoute allowedRoles={["admin", "doctor", "receptionist"]}>
+            <Billing initialShowAddModal />
           </PrivateRoute>
         }
       />

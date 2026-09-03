@@ -4,7 +4,7 @@ import { useAuth } from "../context/AuthContext";
 
 export default function Settings() {
   const { user } = useAuth();
-  const isAdmin = user?.role === "admin";
+  const isAdmin = user?.role === "admin" || user?.role === "superadmin";
 
   const [preferences, setPreferences] = useState({
     emailNotifications: true,

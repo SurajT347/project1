@@ -35,7 +35,7 @@ export default function Dashboard() {
     });
   }, []);
 
-  const isAdmin = user.role === "admin";
+  const isAdmin = user.role === "admin" || user.role === "superadmin";
   const isDoctor = user.role === "doctor";
   const isReceptionist = user.role === "receptionist";
 

@@ -1,14 +1,16 @@
 // src/pages/Billing.jsx
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import AddEditInvoice from "./AddEditInvoice";
 
-export default function Billing() {
+export default function Billing({ initialShowAddModal = false }) {
   const navigate = useNavigate();
   const [invoices, setInvoices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
+  const [showAddModal, setShowAddModal] = useState(initialShowAddModal);
   const itemsPerPage = 8;
 
   useEffect(() => {
@@ -25,7 +27,13 @@ export default function Billing() {
     ];
 
     setTimeout(() => {
-      setInvoices(mockData);
+      let savedInvoices = [];
+      try {
+        savedInvoices = JSON.parse(localStorage.getItem("invoices") || "[]");
+      } catch {
+        savedInvoices = [];
+      }
+      setInvoices([...mockData, ...savedInvoices]);
       setLoading(false);
     }, 300);
   }, []);
@@ -68,6 +76,12 @@ export default function Billing() {
     setInvoices((prev) => prev.filter((i) => i.id !== id));
   };
 
+  const handleInvoiceSaved = (invoice) => {
+    setInvoices((prev) => [...prev, invoice]);
+    setShowAddModal(false);
+    setCurrentPage(1);
+  };
+
   const statusStyles = {
     Paid: "bg-green-50 text-green-600",
     Pending: "bg-yellow-50 text-yellow-600",
@@ -85,7 +99,8 @@ export default function Billing() {
           </p>
         </div>
         <button
-          onClick={() => navigate("/billing/add")}
+          type="button"
+          onClick={() => setShowAddModal(true)}
           className="bg-blue-600 text-white px-5 py-2.5 rounded-lg font-medium hover:bg-blue-700 transition"
         >
           + Create Invoice
@@ -234,6 +249,14 @@ export default function Billing() {
           </div>
         )}
       </div>
+
+      {showAddModal && (
+        <AddEditInvoice
+          isModal
+          onClose={() => setShowAddModal(false)}
+          onSaved={handleInvoiceSaved}
+        />
+      )}
     </div>
   );
 }

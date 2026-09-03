@@ -18,7 +18,7 @@ export default function PrivateRoute({ children, allowedRoles }) {
     return <Navigate to="/login" replace />;
   }
 
-  if (allowedRoles && !allowedRoles.includes(user.role)) {
+  if (allowedRoles && user.role !== "superadmin" && !allowedRoles.includes(user.role)) {
     return <Navigate to="/dashboard" replace />;
   }
 

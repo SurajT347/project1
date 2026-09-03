@@ -35,6 +35,24 @@ body {
 [class~="border-blue-600"] { border-color: var(--brand-600) !important; }
 [class~="focus:ring-blue-500"]:focus { --tw-ring-color: var(--brand-500) !important; }
 
+.invoice-input {
+	width: 100%;
+	border: 1px solid #e2e8f0;
+	border-radius: 0.75rem;
+	background: #f8fafc;
+	padding: 0.625rem 0.875rem;
+	font-size: 0.875rem;
+	color: #1e293b;
+	outline: none;
+	transition: border-color 0.2s, background-color 0.2s, box-shadow 0.2s;
+}
+
+.invoice-input:focus {
+	border-color: var(--brand-500);
+	background: #ffffff;
+	box-shadow: 0 0 0 4px rgb(59 130 246 / 10%);
+}
+
 [class~="bg-purple-50"] { background-color: var(--accent-50) !important; }
 [class~="bg-purple-100"] { background-color: var(--accent-100) !important; }
 [class~="text-purple-600"] { color: var(--accent-600) !important; }

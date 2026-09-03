@@ -1,5 +1,6 @@
 // src/pages/UsersManagement.jsx
 import { useState } from "react";
+import { useAuth } from "../context/AuthContext";
 
 const INITIAL_USERS = [
     { id: "USR-101", name: "Dr. Sarah Johnson", email: "sarah.j@hospital.com", role: "admin", department: "Cardiology", status: "Active" },
@@ -10,6 +11,8 @@ const INITIAL_USERS = [
 ];
 
 export default function UsersManagement() {
+    const { user } = useAuth();
+    const isSuperAdmin = user?.role === "superadmin";
     const [users, setUsers] = useState(INITIAL_USERS);
     const [search, setSearch] = useState("");
     const [roleFilter, setRoleFilter] = useState("all");
@@ -175,7 +178,7 @@ export default function UsersManagement() {
                                         onChange={(e) => setNewUser({ ...newUser, role: e.target.value })}
                                         className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-800 outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10"
                                     >
-                                        <option value="superadmin">Super Admin</option>
+                                        {isSuperAdmin && <option value="superadmin">Super Admin</option>}
                                         <option value="admin">Admin</option>
                                         <option value="doctor">Doctor</option>
                                         <option value="receptionist">Receptionist</option>

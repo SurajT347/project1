@@ -3,23 +3,63 @@ import { useEffect, useRef } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
-const links = [
-  { to: "/dashboard", label: "Dashboard", icon: "🏠", roles: ["admin", "doctor", "receptionist"] },
-  { to: "/patients", label: "Patients", icon: "🧑‍🤝‍🧑", roles: ["admin", "doctor", "receptionist"] },
-  { to: "/doctors", label: "Doctors", icon: "🩺", roles: ["admin"] },
-  { to: "/appointments", label: "Appointments", icon: "📅", roles: ["admin", "doctor", "receptionist"] },
-  { to: "/departments", label: "Departments", icon: "🏥", roles: ["admin"] },
-  { to: "/billing", label: "Billing", icon: "💰", roles: ["admin", "receptionist"] },
-  { to: "/reports", label: "Reports", icon: "📊", roles: ["admin"] },
-  { to: "/users", label: "User Management", icon: "👥", roles: ["admin"] },
-  { to: "/settings", label: "Settings", icon: "⚙️", roles: ["admin", "doctor", "receptionist"] },
-];
+// Role-based menu items
+const getMenuItems = (role) => {
+  const menusByRole = {
+    patient: [
+      { to: "/patient-dashboard", label: "Dashboard", icon: "🏠" },
+      { to: "/patient-appointments", label: "My Appointments", icon: "📅" },
+      { to: "/patient-medical-records", label: "Medical Records", icon: "📋" },
+      { to: "/patient-prescriptions", label: "Prescriptions", icon: "💊" },
+      { to: "/patient-profile", label: "My Profile", icon: "👤" },
+    ],
+    doctor: [
+      { to: "/dashboard", label: "Dashboard", icon: "🏠" },
+      { to: "/patients", label: "My Patients", icon: "👥" },
+      { to: "/appointments", label: "Appointments", icon: "📅" },
+      { to: "/billing", label: "Prescriptions", icon: "💊" },
+      { to: "/reports", label: "Medical Records", icon: "📋" },
+      { to: "/settings", label: "Settings", icon: "⚙️" },
+    ],
+    staff: [
+      { to: "/dashboard", label: "Dashboard", icon: "🏠" },
+      { to: "/appointments", label: "Appointments", icon: "📅" },
+      { to: "/patients", label: "Patients", icon: "🧑‍🤝‍🧑" },
+      { to: "/reports", label: "Reports", icon: "📊" },
+      { to: "/settings", label: "Settings", icon: "⚙️" },
+    ],
+    admin: [
+      { to: "/dashboard", label: "Dashboard", icon: "🏠" },
+      { to: "/patients", label: "Patients", icon: "🧑‍🤝‍🧑" },
+      { to: "/doctors", label: "Doctors", icon: "🩺" },
+      { to: "/appointments", label: "Appointments", icon: "📅" },
+      { to: "/departments", label: "Departments", icon: "🏥" },
+      { to: "/billing", label: "Billing", icon: "💰" },
+      { to: "/reports", label: "Reports", icon: "📊" },
+      { to: "/users", label: "User Management", icon: "👥" },
+      { to: "/settings", label: "Settings", icon: "⚙️" },
+    ],
+    superadmin: [
+      { to: "/dashboard", label: "Dashboard", icon: "🏠" },
+      { to: "/patients", label: "Patients", icon: "🧑‍🤝‍🧑" },
+      { to: "/doctors", label: "Doctors", icon: "🩺" },
+      { to: "/appointments", label: "Appointments", icon: "📅" },
+      { to: "/departments", label: "Departments", icon: "🏥" },
+      { to: "/billing", label: "Billing", icon: "💰" },
+      { to: "/reports", label: "Reports", icon: "📊" },
+      { to: "/users", label: "User Management", icon: "👥" },
+      { to: "/settings", label: "Settings", icon: "⚙️" },
+    ],
+  };
+
+  return menusByRole[role] || menusByRole.patient;
+};
 
 export default function Sidebar({ isOpen = false, onClose = () => {} }) {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
-  const role = user?.role || "receptionist";
-  const visibleLinks = links.filter((link) => link.roles.includes(role));
+  const role = user?.role || "patient";
+  const visibleLinks = getMenuItems(role);
   const asideRef = useRef(null);
 
   const handleLogout = () => {
@@ -82,9 +122,22 @@ export default function Sidebar({ isOpen = false, onClose = () => {} }) {
         `}
       >
         <div className="flex items-center justify-between border-b border-white/15 px-6 py-5">
-          <div>
-            <h1 className="text-lg font-bold tracking-widest text-white">HMS</h1>
-            <p className="text-xs text-blue-100">Hospital Management</p>
+          <div className="flex items-center gap-3">
+            <img 
+              src="/Background-remover.png" 
+              alt="HMS Logo" 
+              className="h-14 w-14 rounded-full object-contain bg-white/10 p-2"
+            />
+            <div>
+              <h1 className="text-lg font-bold tracking-widest text-white">HMS</h1>
+              <p className="text-xs text-blue-100">
+                {role === "patient" && "Patient Portal"}
+                {role === "doctor" && "Doctor Portal"}
+                {role === "staff" && "Staff Portal"}
+                {role === "admin" && "Admin Panel"}
+                {role === "superadmin" && "Super Admin Panel"}
+              </p>
+            </div>
           </div>
           <button
             type="button"
@@ -119,7 +172,17 @@ export default function Sidebar({ isOpen = false, onClose = () => {} }) {
           ))}
         </nav>
 
-        <div className="border-t border-white/15 p-3">
+        <div className="border-t border-white/15 p-3 space-y-3">
+          {/* User Info */}
+          {user && (
+            <div className="bg-white/10 rounded-lg p-3 text-sm">
+              <div className="font-semibold text-white truncate">{user.name}</div>
+              <div className="text-xs text-blue-100 lowercase">{role}</div>
+              <div className="text-xs text-blue-100 truncate">{user.email}</div>
+            </div>
+          )}
+          
+          {/* Logout Button */}
           <button
             type="button"
             onClick={handleLogout}

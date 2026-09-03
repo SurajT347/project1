@@ -102,13 +102,18 @@ export default function AddEditPatient({ isModal = false, onClose, onSaved }) {
   }
 
   return (
-    <div className={isModal ? "fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/55 px-4 py-3 backdrop-blur-[2px]" : "min-h-screen bg-gradient-to-br from-blue-50 via-violet-50 to-purple-100 p-4 sm:p-8"}>
+    <div
+      className={isModal ? "fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/55 px-4 py-3 backdrop-blur-[2px]" : "min-h-screen bg-gradient-to-br from-blue-50 via-violet-50 to-purple-100 p-4 sm:p-8"}
+      onMouseDown={(e) => e.target === e.currentTarget && isModal && closeForm()}
+    >
       <div className={isModal ? "max-h-[84vh] w-full max-w-xl overflow-y-auto rounded-3xl border border-white/70 bg-white shadow-2xl shadow-slate-950/25" : "mx-auto w-full max-w-3xl space-y-6"}>
       {/* Back link */}
       {!isModal && <Link to="/patients" className="text-sm text-blue-600 hover:underline">← Back to Patients</Link>}
 
       {/* Header */}
       <div className={isModal ? "flex items-start justify-between bg-gradient-to-r from-blue-700 via-violet-600 to-purple-600 px-5 py-3.5 text-white" : "rounded-3xl bg-gradient-to-r from-blue-700 via-violet-600 to-purple-600 px-6 py-6 text-white shadow-xl shadow-blue-900/15"}>
+        <div className="flex items-center gap-3">
+        {isModal && <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/15 text-xl shadow-inner ring-1 ring-white/20">+</div>}
         <div>
         <h1 className={isModal ? "text-xl font-bold tracking-tight" : "text-2xl font-bold tracking-tight"}>
           {isEditMode ? "Edit Patient" : "Add New Patient"}
@@ -118,6 +123,7 @@ export default function AddEditPatient({ isModal = false, onClose, onSaved }) {
             ? "Update the patient's information below."
             : "Fill in the details to register a new patient."}
         </p>
+        </div>
         </div>
         {isModal && <button type="button" onClick={closeForm} aria-label="Close patient dialog" title="Close" className="rounded-xl p-2 text-2xl leading-none text-white/75 transition hover:bg-white/15 hover:text-white">&times;</button>}
       </div>
@@ -130,8 +136,8 @@ export default function AddEditPatient({ isModal = false, onClose, onSaved }) {
       )}
 
       {/* Form */}
-      <form onSubmit={handleSubmit} className={isModal ? "space-y-4 p-5" : "space-y-5 rounded-3xl border border-white/80 bg-white p-6 shadow-xl shadow-blue-900/10 sm:p-8"}>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+      <form onSubmit={handleSubmit} className={isModal ? "space-y-3.5 p-5" : "space-y-5 rounded-3xl border border-white/80 bg-white p-6 shadow-xl shadow-blue-900/10 sm:p-8"}>
+        <div className="grid grid-cols-1 gap-x-4 gap-y-3.5 sm:grid-cols-2">
           <Field label="Full Name" required>
             <input
               type="text"
